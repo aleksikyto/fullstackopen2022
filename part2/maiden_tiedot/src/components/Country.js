@@ -1,5 +1,6 @@
+import Weather from "./Weather";
+
 const Country = ({ country }) => {
-  console.log(country);
   return (
     <>
       <div>
@@ -20,6 +21,7 @@ const Country = ({ country }) => {
           style={{ maxWidth: "100px", paddingTop: "30px" }}
         />
       </div>
+      <Weather country={country} />
     </>
   );
 };
