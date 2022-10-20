@@ -22,9 +22,17 @@ const update = (id, newObject) => {
   });
 };
 
+const deletePerson = (id) => {
+  const request = axios.delete(`${baseUrl}/${id}`);
+  return request.then((response) => {
+    return response.data;
+  });
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getAll: getAll,
   create: create,
   update: update,
+  deletePerson: deletePerson,
 };
