@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
+import Notification from "./components/Notification";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import personService from "./services/persons";
@@ -11,6 +12,8 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [newFilter, setNewFilter] = useState("");
+  const [message, setMessage] = useState(null);
+  const [notificationStyle, setNotificationStyle] = useState("");
 
   useEffect(() => {
     personService.getAll().then((response) => {
@@ -26,11 +29,19 @@ const App = () => {
     };
 
     if (!persons.find((person) => person.name === newName)) {
-      personService.create(personObject).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        setNewName("");
-        setNewNumber("");
-      });
+      personService
+        .create(personObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          setNewName("");
+          setNewNumber("");
+          setNotificationStyle("added");
+          setMessage(`Added '${newName}'`);
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+        })
+        .catch((error) => console.log("error.message", error.message));
     }
 
     if (persons.find((person) => person.name === newName)) {
@@ -51,7 +62,11 @@ const App = () => {
             );
           })
           .catch((error) => {
-            alert(`the note '${newName}' was already deleted from server`);
+            setNotificationStyle("error");
+            setMessage(`Person '${newName}' was already deleted from server`);
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
             setPersons(
               persons.filter((person) => person.id !== personToEdit.id)
             );
@@ -86,6 +101,9 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
+      {message !== null && (
+        <Notification message={message} notificationStyle={notificationStyle} />
+      )}
       <h2>add a new</h2>
       <PersonForm
         addPerson={addPerson}
