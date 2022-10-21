@@ -1,5 +1,4 @@
 const Person = ({ person, deletePerson }) => {
-  console.log("pers", person);
   return (
     <li>
       {person.name} {person.number}

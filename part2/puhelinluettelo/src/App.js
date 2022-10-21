@@ -34,12 +34,36 @@ const App = () => {
     }
 
     if (persons.find((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+      const personToEdit = persons.find((person) => person.name === newName);
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with new one?`
+        )
+      ) {
+        const newObject = { name: newName, number: newNumber };
+        personService
+          .update(personToEdit.id, newObject)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== personToEdit.id ? person : returnedPerson
+              )
+            );
+          })
+          .catch((error) => {
+            alert(`the note '${newName}' was already deleted from server`);
+            setPersons(
+              persons.filter((person) => person.id !== personToEdit.id)
+            );
+          });
+      }
     }
   };
 
   const deletePerson = (id) => {
     personService.deletePerson(id);
+    const updatedList = persons.filter((person) => person.id !== id);
+    setPersons(updatedList);
   };
 
   const handleNameChange = (event) => {
