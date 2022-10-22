@@ -19,7 +19,7 @@ const App = () => {
     personService.getAll().then((response) => {
       setPersons(response);
     });
-  }, []);
+  }, [persons]);
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -35,7 +35,7 @@ const App = () => {
           setPersons(persons.concat(returnedPerson));
           setNewName("");
           setNewNumber("");
-          setNotificationStyle("added");
+          setNotificationStyle("success");
           setMessage(`Added '${newName}'`);
           setTimeout(() => {
             setMessage(null);
@@ -60,6 +60,11 @@ const App = () => {
                 person.id !== personToEdit.id ? person : returnedPerson
               )
             );
+            setNotificationStyle("success");
+            setMessage(`Modified number of '${newName}'`);
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
           })
           .catch((error) => {
             setNotificationStyle("error");
@@ -76,9 +81,16 @@ const App = () => {
   };
 
   const deletePerson = (id) => {
+    const selectedPerson = persons.filter((person) => person.id === id);
+    console.log(selectedPerson);
     personService.deletePerson(id);
     const updatedList = persons.filter((person) => person.id !== id);
     setPersons(updatedList);
+    setNotificationStyle("success");
+    setMessage(`Deleted person '${selectedPerson[0].name}'`);
+    setTimeout(() => {
+      setMessage(null);
+    }, 5000);
   };
 
   const handleNameChange = (event) => {

@@ -1,5 +1,5 @@
 const Notification = ({ message, notificationStyle }) => {
-  const color = notificationStyle === "added" ? "green" : "red";
+  const color = notificationStyle === "success" ? "green" : "red";
   const errorStyle = {
     color: color,
     background: "lightgrey",
