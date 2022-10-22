@@ -5,8 +5,6 @@ import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import personService from "./services/persons";
 
-// npx json-server --port=3001 --watch db.json
-
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
@@ -82,7 +80,6 @@ const App = () => {
 
   const deletePerson = (id) => {
     const selectedPerson = persons.filter((person) => person.id === id);
-    console.log(selectedPerson);
     personService.deletePerson(id);
     const updatedList = persons.filter((person) => person.id !== id);
     setPersons(updatedList);
