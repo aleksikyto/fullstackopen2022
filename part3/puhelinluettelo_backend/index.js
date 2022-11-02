@@ -1,7 +1,22 @@
 const express = require("express");
+const morgan = require("morgan");
 const app = express();
 
 app.use(express.json());
+
+morgan.token("resBody", function (req, res) {
+  if (res["statusCode"] === 200) {
+    const name = req.body.name;
+    const number = req.body.number;
+    return JSON.stringify({ name, number });
+  }
+});
+
+app.use(
+  morgan(
+    ":method :url :status :res[content-length] - :response-time ms :resBody"
+  )
+);
 
 let persons = [
   {
@@ -66,23 +81,21 @@ app.post("/api/persons", (request, response) => {
     });
   }
 
-  if (!persons?.filter((person) => person.name === body.name).length) {
-    const person = {
-      name: body.name,
-      number: body.number,
-      id: generateId(),
-    };
-
-    persons = persons.concat(person);
-
-    response.json(person);
-  }
-
   if (persons?.filter((person) => person.name === body.name).length) {
     return response.status(400).json({
       error: "name must be unique",
     });
   }
+
+  const person = {
+    name: body?.name,
+    number: body?.number,
+    id: generateId(),
+  };
+
+  persons = persons.concat(person);
+
+  response.json(person);
 });
 
 app.get("/info", (req, res) => {
